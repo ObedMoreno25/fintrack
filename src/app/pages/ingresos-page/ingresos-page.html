@@ -1,0 +1,142 @@
+
+
+<section class="ingresos-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Mis Ingresos</h1>
+      <p>Registra y administra tus entradas de dinero.</p>
+    </div>
+    <span class="header-icon">↗</span>
+  </div>
+
+  <div class="ingresos-layout">
+
+    <!-- FORMULARIO -->
+    <form
+      [formGroup]="ingresoForm"
+      (ngSubmit)="onSubmit()"
+      class="ingreso-form"
+    >
+
+      <h2>Registrar ingreso</h2>
+
+      <div class="form-group">
+        <label for="concepto">Concepto</label>
+        <input
+          id="concepto"
+          type="text"
+          formControlName="concepto"
+          placeholder="Ej. Sueldo quincenal"
+        >
+
+        @if (ingresoForm.get('concepto')?.invalid &&
+             ingresoForm.get('concepto')?.touched) {
+          <span class="error-text">
+            Ingresa un concepto de al menos 3 caracteres.
+          </span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="cantidad">Cantidad (MXN)</label>
+        <input
+          id="cantidad"
+          type="number"
+          min="0.01"
+          step="0.01"
+          formControlName="cantidad"
+          placeholder="Ej. 7000"
+        >
+
+        @if (ingresoForm.get('cantidad')?.invalid &&
+             ingresoForm.get('cantidad')?.touched) {
+          <span class="error-text">
+            Ingresa una cantidad mayor a cero.
+          </span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="categoria">Categoría</label>
+        <select id="categoria" formControlName="categoria">
+          <option value="">Selecciona una categoría</option>
+          <option value="Salario">Salario</option>
+          <option value="Negocio">Negocio</option>
+          <option value="Freelance">Freelance</option>
+          <option value="Otros">Otros</option>
+        </select>
+
+        @if (ingresoForm.get('categoria')?.invalid &&
+             ingresoForm.get('categoria')?.touched) {
+          <span class="error-text">
+            Selecciona una categoría.
+          </span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha</label>
+        <input
+          id="fecha"
+          type="date"
+          formControlName="fecha"
+        >
+
+        @if (ingresoForm.get('fecha')?.invalid &&
+             ingresoForm.get('fecha')?.touched) {
+          <span class="error-text">
+            Selecciona una fecha.
+          </span>
+        }
+      </div>
+
+      <button type="submit" [disabled]="ingresoForm.invalid">
+        + Guardar ingreso
+      </button>
+
+    </form>
+
+    <!-- LISTADO -->
+    <div class="ingresos-list">
+
+      <div class="list-header">
+        <h2>Ingresos registrados</h2>
+        <span>
+          {{ totalIngresos() | currency:'MXN':'symbol-narrow':'1.2-2' }}
+        </span>
+      </div>
+
+      @for (ingreso of ingresos(); track ingreso.id) {
+        <div class="ingreso-item">
+
+          <div class="ingreso-info">
+            <h3>{{ ingreso.concepto }}</h3>
+            <p>{{ ingreso.categoria }} · {{ ingreso.fecha }}</p>
+          </div>
+
+          <div class="ingreso-actions">
+            <strong>
+              +{{ ingreso.cantidad | currency:'MXN':'symbol-narrow':'1.2-2' }}
+            </strong>
+
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="deleteIngreso(ingreso.id)"
+            >
+              Eliminar
+            </button>
+          </div>
+
+        </div>
+      } @empty {
+        <p class="empty-message">
+          Todavía no tienes ingresos registrados.
+        </p>
+      }
+
+    </div>
+
+  </div>
+</section>

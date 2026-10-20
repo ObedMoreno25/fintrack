@@ -1,0 +1,47 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+
+/* PALETA DE COLORES - MIS FINANZAS */
+
+:root {
+  /* Colores principales */
+  --color-primary: #231651;
+  --color-secondary: #CBBAED;
+  --color-success: #3C493F;
+  --color-danger: #9A031E;
+  --color-white: #FFFFFF;
+
+  /* Colores complementarios */
+  --color-background: #17112E;
+  --color-surface: #302451;
+
+  /* Textos */
+  --color-text: #FFFFFF;
+  --color-text-secondary: #CBBAED;
+}
+
+/* ESTILOS GENERALES */
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: 'Outfit', sans-serif;
+}

@@ -1,0 +1,76 @@
+
+<section class="dashboard">
+
+  <!-- ENCABEZADO -->
+  <div class="dashboard-header">
+    <div>
+      <h1>Mi Dashboard</h1>
+      <p>Consulta el estado general de tus finanzas personales.</p>
+    </div>
+
+    <div class="header-icon">📊</div>
+  </div>
+
+  <!-- TARJETAS FINANCIERAS -->
+  <div class="summary-grid">
+
+    <!-- INGRESOS -->
+    <div class="summary-card">
+      <div class="card-top">
+        <span>Ingresos totales</span>
+        <span class="card-icon income-icon">↗</span>
+      </div>
+
+      <h2>{{ ingresos() | currency:'MXN':'symbol-narrow':'1.2-2' }}</h2>
+      <p class="income-text">Total registrado</p>
+    </div>
+
+    <!-- GASTOS -->
+    <div class="summary-card">
+      <div class="card-top">
+        <span>Gastos totales</span>
+        <span class="card-icon expense-icon">↘</span>
+      </div>
+
+      <h2>{{ gastos() | currency:'MXN':'symbol-narrow':'1.2-2' }}</h2>
+      <p class="expense-text">Total registrado</p>
+    </div>
+
+    <!-- BALANCE -->
+    <div class="summary-card balance-card">
+      <div class="card-top">
+        <span>Balance disponible</span>
+        <span class="card-icon balance-icon">◈</span>
+      </div>
+
+      <h2>{{ balance() | currency:'MXN':'symbol-narrow':'1.2-2' }}</h2>
+      <p>Ingresos menos gastos</p>
+    </div>
+
+  </div>
+
+  <!-- MOVIMIENTOS RECIENTES -->
+  <div class="recent-section">
+    <div class="section-header">
+      <h2>Movimientos recientes</h2>
+      <a routerLink="/historial">Ver historial →</a>
+    </div>
+
+    <div class="movement-row">
+      <div>
+        <h3>Sueldo</h3>
+        <p>Ingreso</p>
+      </div>
+      <span class="income-text">+$7,000.00</span>
+    </div>
+
+    <div class="movement-row">
+      <div>
+        <h3>Alimentación</h3>
+        <p>Gasto</p>
+      </div>
+      <span class="expense-text">−$350.00</span>
+    </div>
+  </div>
+
+</section>
