@@ -1,0 +1,767 @@
+
+<section class="tarjetas-page">
+
+  <div class="page-header">
+    <div>
+      <span class="page-eyebrow">FINTRACK / MIS TARJETAS</span>
+      <h1>Mis tarjetas</h1>
+      <p>Administra tus tarjetas y mantén tus pagos bajo control.</p>
+    </div>
+
+    <button type="button" class="btn-add" (click)="abrirFormulario()">
+      <span>+</span> Nueva tarjeta
+    </button>
+  </div>
+
+  <div class="section-heading">
+    <div>
+      <h2>Tus tarjetas</h2>
+      <p>Selecciona una tarjeta para consultar su información.</p>
+    </div>
+
+    <span class="card-count">
+      {{ tarjetas().length }}
+      {{ tarjetas().length === 1 ? 'tarjeta' : 'tarjetas' }}
+    </span>
+  </div>
+
+  <div class="cards-grid">
+    @for (tarjeta of tarjetas(); track tarjeta.id) {
+      <button
+        type="button"
+        class="bank-card"
+        [class.selected]="tarjetaSeleccionada() === tarjeta.id"
+        [style.--card-color]="tarjeta.color"
+        (click)="seleccionarTarjeta(tarjeta.id)">
+
+        <div class="bank-card-top">
+          <span class="bank-name">{{ tarjeta.banco }}</span>
+          <span class="card-type">
+            {{ tarjeta.tipo === 'credito' ? 'Crédito' : 'Débito' }}
+          </span>
+        </div>
+
+        <div class="card-chip"><span></span><span></span></div>
+
+        <div class="bank-card-number">
+          •••• &nbsp; •••• &nbsp; •••• &nbsp;
+          {{ tarjeta.ultimosDigitos }}
+        </div>
+
+        <div class="bank-card-bottom">
+          <div>
+            <small>
+              {{ tarjeta.tipo === 'credito'
+                ? 'Crédito disponible'
+                : 'Saldo disponible' }}
+            </small>
+            <strong>{{ formatoMoneda(obtenerDisponible(tarjeta)) }}</strong>
+          </div>
+          <span class="card-symbol">◈</span>
+        </div>
+      </button>
+    } @empty {
+      <div class="empty-state">
+        <h3>Aún no tienes tarjetas</h3>
+        <p>Registra tu primera tarjeta para comenzar.</p>
+      </div>
+    }
+  </div>
+
+  @if (tarjetaActiva(); as tarjeta) {
+    <div class="details-panel">
+
+      <div class="details-header">
+        <div>
+          <span class="details-eyebrow">DETALLES DE LA TARJETA</span>
+          <h2>{{ tarjeta.nombre }}</h2>
+          <p>{{ tarjeta.banco }} · Terminación {{ tarjeta.ultimosDigitos }}</p>
+        </div>
+
+        <span class="details-type">
+          {{ tarjeta.tipo === 'credito'
+            ? 'Tarjeta de crédito'
+            : 'Tarjeta de débito' }}
+        </span>
+      </div>
+
+      <div class="card-actions">
+        <button type="button" class="btn-edit" (click)="editarTarjeta()">
+          Editar tarjeta
+        </button>
+        <button type="button" class="btn-delete" (click)="eliminarTarjeta()">
+          Eliminar tarjeta
+        </button>
+      </div>
+
+      @if (tarjeta.tipo === 'credito') {
+        <div class="details-grid">
+          <div class="detail-item">
+            <span>Límite de crédito</span>
+            <strong>{{ formatoMoneda(tarjeta.limite ?? 0) }}</strong>
+          </div>
+          <div class="detail-item">
+            <span>Crédito utilizado</span>
+            <strong>{{ formatoMoneda(tarjeta.saldo) }}</strong>
+          </div>
+          <div class="detail-item">
+            <span>Crédito disponible</span>
+            <strong class="positive">
+              {{ formatoMoneda(obtenerDisponible(tarjeta)) }}
+            </strong>
+          </div>
+          <div class="detail-item">
+            <span>Fecha de corte</span>
+            <strong>Día {{ tarjeta.diaCorte }}</strong>
+          </div>
+          <div class="detail-item">
+            <span>Fecha límite de pago</span>
+            <strong>Día {{ tarjeta.diaPago }}</strong>
+          </div>
+        </div>
+
+        <div class="credit-usage">
+          <div class="usage-header">
+            <span>Uso de tu línea de crédito</span>
+            <strong>{{ porcentajeUtilizado(tarjeta).toFixed(0) }}%</strong>
+          </div>
+          <div class="usage-track">
+            <div
+              class="usage-fill"
+              [style.width.%]="porcentajeUtilizado(tarjeta)">
+            </div>
+          </div>
+        </div>
+
+        
+<div class="payment-panel">
+
+  <div class="payment-panel-header">
+    <div>
+      <span class="details-eyebrow">CALENDARIO DE TU TARJETA</span>
+      <h3>Próximas fechas importantes</h3>
+      <p>Consulta tus próximos cortes y fechas límite de pago.</p>
+    </div>
+  </div>
+
+  <div class="payment-dates-grid">
+
+    <div class="payment-date-card">
+      <div class="payment-date-icon">📅</div>
+
+      <span>Próximo corte</span>
+
+      <strong>
+        {{ formatearFecha(proximoCorte(tarjeta)) }}
+      </strong>
+
+      <small>
+        Día {{ tarjeta.diaCorte }} de cada mes
+      </small>
+    </div>
+
+    <div class="payment-date-card">
+      <div class="payment-date-icon">💳</div>
+
+      <span>Próxima fecha de pago</span>
+
+      <strong>
+        {{ formatearFecha(proximoPago(tarjeta)) }}
+      </strong>
+
+      <small>
+        Día {{ tarjeta.diaPago }} de cada mes
+      </small>
+    </div>
+
+  </div>
+
+  <div
+    class="payment-alert"
+    [class.alert-urgent]="nivelAlertaPago(tarjeta) === 'urgente'"
+    [class.alert-upcoming]="nivelAlertaPago(tarjeta) === 'proximo'">
+
+    <span class="payment-alert-icon">🔔</span>
+
+    <div>
+      <strong>Recordatorio de pago</strong>
+      <p>{{ estadoProximoPago(tarjeta) }}</p>
+    </div>
+
+  </div>
+
+</div>
+
+      } @else {
+        <div class="details-grid">
+          <div class="detail-item">
+            <span>Saldo disponible</span>
+            <strong class="positive">
+              {{ formatoMoneda(tarjeta.saldo) }}
+            </strong>
+          </div>
+          <div class="detail-item">
+            <span>Tipo de cuenta</span>
+            <strong>Débito</strong>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (tarjeta.tipo === 'credito') {
+      <div class="msi-panel">
+
+        <div class="msi-header">
+          <div>
+            <span class="details-eyebrow">CONTROL DE FINANCIAMIENTOS</span>
+            <h2>Compras a meses sin intereses</h2>
+            <p>Compras asociadas a {{ tarjeta.nombre }}</p>
+          </div>
+
+          <button
+            type="button"
+            class="btn-add"
+            (click)="abrirFormularioMSI()">
+            <span>+</span> Nueva compra
+          </button>
+        </div>
+
+        <div class="msi-summary">
+          <div>
+            <span>Compras registradas</span>
+            <strong>{{ comprasTarjetaActiva().length }}</strong>
+          </div>
+          <div>
+            <span>Saldo pendiente MSI</span>
+            <strong>{{ formatoMoneda(totalPendienteMSI()) }}</strong>
+          </div>
+        </div>
+
+        <div class="msi-list">
+          @for (compra of comprasTarjetaActiva(); track compra.id) {
+            <div class="msi-item">
+
+              <div class="msi-item-top">
+                <div>
+                  <h3>{{ compra.concepto }}</h3>
+                  <p>
+                    Compra: {{ compra.fechaCompra }}
+                    · {{ compra.meses }} MSI
+                  </p>
+                </div>
+
+                <span class="msi-status">
+                  {{ saldoPendienteMSI(compra) === 0
+                    ? 'Liquidada'
+                    : 'Activa' }}
+                </span>
+              </div>
+
+              <div class="msi-values">
+                <div>
+                  <small>Monto original</small>
+                  <strong>{{ formatoMoneda(compra.montoTotal) }}</strong>
+                </div>
+                <div>
+                  <small>Mensualidad</small>
+                  <strong>{{ formatoMoneda(mensualidadMSI(compra)) }}</strong>
+                </div>
+                <div>
+                  <small>Saldo pendiente</small>
+                  <strong>{{ formatoMoneda(saldoPendienteMSI(compra)) }}</strong>
+                </div>
+              </div>
+
+              <div class="msi-progress-info">
+                <span>
+                  {{ mensualidadesCubiertas(compra) }}
+                  de {{ compra.meses }} mensualidades cubiertas
+                </span>
+                <strong>{{ porcentajeMSI(compra).toFixed(1) }}%</strong>
+              </div>
+
+              <div class="msi-progress-track">
+                <div
+                  class="msi-progress-fill"
+                  [style.width.%]="porcentajeMSI(compra)">
+                </div>
+              </div>
+
+              <div class="msi-extra-info">
+                <div>
+                  <span>Total abonado</span>
+                  <strong>{{ formatoMoneda(totalAbonadoMSI(compra)) }}</strong>
+                </div>
+                <div>
+                  <span>Abono a siguiente mensualidad</span>
+                  <strong>
+                    {{ formatoMoneda(adelantoSiguienteMSI(compra)) }}
+                  </strong>
+                </div>
+                <div>
+                  <span>Falta para completar la siguiente</span>
+                  <strong>{{ formatoMoneda(faltaSiguienteMSI(compra)) }}</strong>
+                </div>
+              </div>
+
+              <div class="msi-actions">
+
+  <button
+    type="button"
+    class="btn-edit"
+    (click)="editarCompraMSI(compra.id)">
+    Editar compra
+  </button>
+
+  <button
+    type="button"
+    class="btn-save"
+    [disabled]="saldoPendienteMSI(compra) === 0"
+    (click)="abrirFormularioAbono(compra.id)">
+    + Registrar abono
+  </button>
+
+  <button
+    type="button"
+    class="btn-delete"
+    (click)="eliminarCompraMSI(compra.id)">
+    Eliminar compra
+  </button>
+
+</div>
+
+              <div class="msi-history">
+                <h4>Historial de abonos</h4>
+
+                @for (abono of compra.abonos; track abono.id) {
+                  <div class="msi-history-row">
+                    <div>
+                      <strong>{{ formatoMoneda(abono.monto) }}</strong>
+                      <span>{{ abono.fecha }}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="btn-remove-abono"
+                      (click)="eliminarAbono(compra.id, abono.id)">
+                      Eliminar
+                    </button>
+                  </div>
+                } @empty {
+                  <p class="msi-history-empty">
+                    Todavía no hay abonos registrados.
+                  </p>
+                }
+              </div>
+
+            </div>
+          } @empty {
+            <div class="msi-empty">
+              <h3>No tienes compras MSI registradas</h3>
+              <p>
+                Agrega una compra para comenzar a visualizar
+                sus mensualidades y saldo pendiente.
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</section>
+
+<!-- FORMULARIO CREAR / EDITAR TARJETA -->
+@if (mostrarFormulario()) {
+  <div class="modal-overlay" (click)="cerrarFormulario()">
+    <div
+      class="modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-tarjeta"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <span class="details-eyebrow">FINTRACK</span>
+          <h2 id="titulo-tarjeta">
+            {{ tarjetaEditando() !== null
+              ? 'Editar tarjeta'
+              : 'Nueva tarjeta' }}
+          </h2>
+          <p>Completa la información de tu tarjeta.</p>
+        </div>
+        <button
+          type="button"
+          class="modal-close"
+          aria-label="Cerrar formulario"
+          (click)="cerrarFormulario()">×</button>
+      </div>
+
+      <form [formGroup]="formTarjeta" (ngSubmit)="guardarTarjeta()">
+        <div class="form-grid">
+
+          <div class="form-field">
+            <label for="nombre-tarjeta">Nombre de la tarjeta</label>
+            <input
+              id="nombre-tarjeta"
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. BBVA Azul">
+
+            @if (formTarjeta.controls.nombre.touched &&
+                 formTarjeta.controls.nombre.invalid) {
+              <small class="form-error">
+                Ingresa un nombre de al menos 3 caracteres.
+              </small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="banco-tarjeta">Banco</label>
+            <input
+              id="banco-tarjeta"
+              type="text"
+              formControlName="banco"
+              placeholder="Ej. BBVA">
+
+            @if (formTarjeta.controls.banco.touched &&
+                 formTarjeta.controls.banco.invalid) {
+              <small class="form-error">Ingresa el banco.</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="tipo-tarjeta">Tipo de tarjeta</label>
+            <select id="tipo-tarjeta" formControlName="tipo">
+              <option value="credito">Crédito</option>
+              <option value="debito">Débito</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="digitos-tarjeta">Últimos 4 dígitos</label>
+            <input
+              id="digitos-tarjeta"
+              type="text"
+              maxlength="4"
+              inputmode="numeric"
+              formControlName="ultimosDigitos"
+              placeholder="Ej. 4582">
+
+            @if (formTarjeta.controls.ultimosDigitos.touched &&
+                 formTarjeta.controls.ultimosDigitos.invalid) {
+              <small class="form-error">
+                Ingresa exactamente 4 números.
+              </small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="color-tarjeta">Color de la tarjeta</label>
+            <input
+              id="color-tarjeta"
+              type="color"
+              class="color-input"
+              formControlName="color">
+          </div>
+
+          @if (formTarjeta.controls.tipo.value === 'credito') {
+            <div class="form-field">
+              <label for="limite-tarjeta">Límite de crédito</label>
+              <input
+                id="limite-tarjeta"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="limite">
+            </div>
+
+            <div class="form-field">
+              <label for="saldo-tarjeta">Crédito utilizado</label>
+              <input
+                id="saldo-tarjeta"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="saldo">
+            </div>
+
+            <div class="form-field">
+              <label for="corte-tarjeta">Día de corte</label>
+              <input
+                id="corte-tarjeta"
+                type="number"
+                min="1"
+                max="31"
+                step="1"
+                formControlName="diaCorte">
+
+              @if (formTarjeta.controls.diaCorte.touched &&
+                   formTarjeta.controls.diaCorte.invalid) {
+                <small class="form-error">
+                  Ingresa un día entero entre 1 y 31.
+                </small>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="pago-tarjeta">Día límite de pago</label>
+              <input
+                id="pago-tarjeta"
+                type="number"
+                min="1"
+                max="31"
+                step="1"
+                formControlName="diaPago">
+
+              @if (formTarjeta.controls.diaPago.touched &&
+                   formTarjeta.controls.diaPago.invalid) {
+                <small class="form-error">
+                  Ingresa un día entero entre 1 y 31.
+                </small>
+              }
+            </div>
+          } @else {
+            <div class="form-field">
+              <label for="saldo-debito">Saldo disponible</label>
+              <input
+                id="saldo-debito"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="saldo">
+            </div>
+          }
+        </div>
+
+        @if (errorFormulario()) {
+          <p class="form-error form-general-error" role="alert">
+            {{ errorFormulario() }}
+          </p>
+        }
+
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="cerrarFormulario()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-save">
+            {{ tarjetaEditando() !== null
+              ? 'Guardar cambios'
+              : 'Guardar tarjeta' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- FORMULARIO NUEVA COMPRA MSI -->
+@if (mostrarFormularioMSI()) {
+  <div class="modal-overlay" (click)="cerrarFormularioMSI()">
+    <div
+      class="modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-msi"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <span class="details-eyebrow">FINTRACK / MSI</span>
+          <h2 id="titulo-msi">
+  {{ compraEditando() !== null
+    ? 'Editar compra MSI'
+    : 'Nueva compra MSI' }}
+</h2>
+          <p>Registra una compra a meses sin intereses.</p>
+        </div>
+        <button
+          type="button"
+          class="modal-close"
+          aria-label="Cerrar formulario"
+          (click)="cerrarFormularioMSI()">×</button>
+      </div>
+
+      <form [formGroup]="formMSI" (ngSubmit)="guardarCompraMSI()">
+        <div class="form-grid">
+
+          <div class="form-field">
+            <label for="concepto-msi">Producto o concepto</label>
+            <input
+              id="concepto-msi"
+              type="text"
+              formControlName="concepto"
+              placeholder="Ej. Laptop Lenovo">
+
+            @if (formMSI.controls.concepto.touched &&
+                 formMSI.controls.concepto.invalid) {
+              <small class="form-error">
+                Escribe un concepto de al menos 3 caracteres.
+              </small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="monto-msi">Monto total de la compra</label>
+            <input
+              id="monto-msi"
+              type="number"
+              min="0.01"
+              step="0.01"
+              formControlName="montoTotal">
+
+            @if (formMSI.controls.montoTotal.touched &&
+                 formMSI.controls.montoTotal.invalid) {
+              <small class="form-error">
+                Ingresa un monto mayor que cero.
+              </small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="meses-msi">Plazo sin intereses</label>
+            <select id="meses-msi" formControlName="meses">
+              <option [ngValue]="3">3 meses</option>
+              <option [ngValue]="6">6 meses</option>
+              <option [ngValue]="9">9 meses</option>
+              <option [ngValue]="12">12 meses</option>
+              <option [ngValue]="15">15 meses</option>
+              <option [ngValue]="18">18 meses</option>
+              <option [ngValue]="24">24 meses</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="fecha-msi">Fecha de compra</label>
+            <input
+              id="fecha-msi"
+              type="date"
+              formControlName="fechaCompra">
+
+            @if (formMSI.controls.fechaCompra.touched &&
+                 formMSI.controls.fechaCompra.invalid) {
+              <small class="form-error">
+                Selecciona la fecha de compra.
+              </small>
+            }
+          </div>
+        </div>
+
+        @if (errorMSI()) {
+          <p class="form-error form-general-error" role="alert">
+            {{ errorMSI() }}
+          </p>
+        }
+
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="cerrarFormularioMSI()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-save">
+  {{ compraEditando() !== null
+    ? 'Guardar cambios'
+    : 'Guardar compra' }}
+</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- FORMULARIO REGISTRAR ABONO -->
+@if (mostrarFormularioAbono()) {
+  <div class="modal-overlay" (click)="cerrarFormularioAbono()">
+    <div
+      class="modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-abono"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <span class="details-eyebrow">FINTRACK / ABONOS MSI</span>
+          <h2 id="titulo-abono">Registrar abono</h2>
+          <p>
+            @if (compraActivaParaAbono(); as compra) {
+              {{ compra.concepto }} ·
+              Pendiente: {{ formatoMoneda(saldoPendienteMSI(compra)) }}
+            }
+          </p>
+        </div>
+        <button
+          type="button"
+          class="modal-close"
+          aria-label="Cerrar formulario"
+          (click)="cerrarFormularioAbono()">×</button>
+      </div>
+
+      <form [formGroup]="formAbono" (ngSubmit)="guardarAbono()">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="monto-abono">Monto aplicado a la compra</label>
+            <input
+              id="monto-abono"
+              type="number"
+              min="0.01"
+              step="0.01"
+              formControlName="monto"
+              placeholder="Ej. 1500">
+
+            @if (formAbono.controls.monto.touched &&
+                 formAbono.controls.monto.invalid) {
+              <small class="form-error">
+                Ingresa un monto mayor que cero.
+              </small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="fecha-abono">Fecha del abono</label>
+            <input
+              id="fecha-abono"
+              type="date"
+              formControlName="fecha">
+
+            @if (formAbono.controls.fecha.touched &&
+                 formAbono.controls.fecha.invalid) {
+              <small class="form-error">
+                Selecciona una fecha válida.
+              </small>
+            }
+          </div>
+        </div>
+
+        <p class="msi-form-note">
+          Registra únicamente el importe que el banco haya aplicado
+          a esta compra MSI. No necesariamente es el pago total
+          que realizaste a tu tarjeta.
+        </p>
+
+        @if (errorAbono()) {
+          <p class="form-error form-general-error" role="alert">
+            {{ errorAbono() }}
+          </p>
+        }
+
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="cerrarFormularioAbono()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-save">
+            Registrar abono
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

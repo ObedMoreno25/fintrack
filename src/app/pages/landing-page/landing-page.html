@@ -1,0 +1,283 @@
+
+<div class="landing">
+
+  <!-- NAVEGACIÓN -->
+  <header class="landing-header">
+    <a routerLink="/" class="brand">
+      <img
+  src="/icons/wallet-cards.svg"
+  alt=""
+  class="brand-icon"
+/>
+      <span>FinTrack</span>
+    </a>
+
+    <div class="nav-actions">
+      <a routerLink="/login" class="btn-outline">
+        Iniciar sesión
+      </a>
+      <a routerLink="/registro" class="btn-primary">
+        Registrarse
+      </a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="inicio">
+
+      
+<div class="hero-content">
+
+  <div class="hero-eyebrow">
+    <span>✦</span>
+    TU DINERO, TUS REGLAS
+  </div>
+
+  <h1 class="hero-title">
+    <span>Organiza.</span>
+    <span class="highlight">Ahorra.</span>
+    <span>Crece.</span>
+  </h1>
+
+  <p class="hero-description">
+    Transforma la manera en que administras tu dinero.
+    Organiza tus gastos, planifica tus ahorros y alcanza
+    tus metas financieras desde un solo lugar.
+  </p>
+
+  <div class="hero-actions">
+    <a routerLink="/registro" class="btn-primary">
+      Comenzar gratis
+    </a>
+
+    <a href="#funcionalidades" class="btn-secondary">
+      Descubrir FinTrack
+    </a>
+  </div>
+
+  <p class="hero-note">
+    Sin complicaciones. A tu ritmo.
+  </p>
+
+</div>
+
+
+      <!-- VISTA PREVIA -->
+      
+
+
+<!-- GRÁFICA PRINCIPAL DEL HERO -->
+<div class="growth-showcase">
+
+  <div class="growth-glow"></div>
+
+  <div class="growth-card">
+
+    <div class="growth-card-header">
+      <span>✦ TU PROGRESO FINANCIERO</span>
+      <span class="growth-status">● En crecimiento</span>
+    </div>
+
+    <div class="growth-card-title">
+      <h3>Cada paso cuenta.</h3>
+      <p>Construye un mejor futuro financiero.</p>
+    </div>
+
+    <div class="growth-chart">
+      <svg
+        viewBox="0 0 500 240"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="Gráfica ilustrativa de progreso financiero">
+
+        <defs>
+          <linearGradient id="growth-gradient"
+                          x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"
+                  stop-color="#a78bfa"
+                  stop-opacity="0.35" />
+            <stop offset="100%"
+                  stop-color="#a78bfa"
+                  stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        <g stroke="#40384f"
+           stroke-width="1"
+           stroke-dasharray="4 6">
+          <line x1="0" y1="50" x2="500" y2="50" />
+          <line x1="0" y1="105" x2="500" y2="105" />
+          <line x1="0" y1="160" x2="500" y2="160" />
+          <line x1="0" y1="215" x2="500" y2="215" />
+        </g>
+
+        <path
+          d="M0 205
+             C55 195 75 145 120 165
+             S195 190 245 115
+             S315 145 365 70
+             S445 95 500 25
+             L500 240 L0 240 Z"
+          fill="url(#growth-gradient)" />
+
+        <path
+          class="growth-line"
+          d="M0 205
+             C55 195 75 145 120 165
+             S195 190 245 115
+             S315 145 365 70
+             S445 95 500 25"
+          fill="none"
+          stroke="#b99aff"
+          stroke-width="4"
+          stroke-linecap="round" />
+
+        <circle cx="500" cy="25" r="7"
+                fill="#6bdab6" />
+
+      </svg>
+    </div>
+
+    <div class="growth-footer">
+      <div class="growth-footer-icon">✓</div>
+
+      <div>
+        <strong>Tu futuro comienza hoy</strong>
+        <span>Organiza, planifica y alcanza tus metas.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="growth-floating">
+    <span>✦ Pequeños avances</span>
+    <strong>Grandes resultados</strong>
+  </div>
+
+</div>
+
+
+    </section>
+
+    <!-- FUNCIONALIDADES -->
+    
+<section class="showcase-section" id="funcionalidades">
+
+  <div class="section-heading">
+    <span>DESCUBRE FINTRACK</span>
+    <h2>Herramientas para tu tranquilidad financiera</h2>
+    <p>
+      Descubre cómo FinTrack puede ayudarte a organizar
+      tu dinero de forma sencilla.
+    </p>
+  </div>
+
+  <!-- PESTAÑAS -->
+  <div class="showcase-tabs">
+
+    <button
+      type="button"
+      [class.active]="seccionActiva() === 'tarjetas'"
+      (click)="cambiarSeccion('tarjetas')">
+      Tarjetas
+    </button>
+
+    <button
+      type="button"
+      [class.active]="seccionActiva() === 'presupuestos'"
+      (click)="cambiarSeccion('presupuestos')">
+      Presupuestos
+    </button>
+
+    <button
+      type="button"
+      [class.active]="seccionActiva() === 'ahorro'"
+      (click)="cambiarSeccion('ahorro')">
+      Ahorro
+    </button>
+
+  </div>
+
+  <!-- CONTENIDO DINÁMICO -->
+  <div class="showcase-content">
+
+    <div class="showcase-description">
+
+      <div class="showcase-icon">
+        <img [src]="contenidoActivo().icono" alt="">
+      </div>
+
+      <h3>{{ contenidoActivo().titulo }}</h3>
+
+      <p>{{ contenidoActivo().descripcion }}</p>
+
+      <a routerLink="/registro" class="showcase-link">
+        Comenzar ahora →
+      </a>
+
+    </div>
+
+    <!-- VISTA PREVIA -->
+    <div class="showcase-preview">
+
+      <div class="showcase-preview-header">
+        <span>◈ FinTrack</span>
+        <small>Vista de ejemplo</small>
+      </div>
+
+      <div class="showcase-preview-body">
+
+        <span class="preview-caption">
+          {{ contenidoActivo().etiqueta }}
+        </span>
+
+        <h3>{{ contenidoActivo().cantidad }}</h3>
+
+        <p>{{ contenidoActivo().detalle }}</p>
+
+        @if (seccionActiva() === 'ahorro') {
+          <div class="showcase-progress">
+            <div class="showcase-progress-fill"></div>
+          </div>
+        }
+
+        @if (seccionActiva() === 'presupuestos') {
+          <div class="showcase-budget">
+            <div class="budget-needs"></div>
+            <div class="budget-wants"></div>
+            <div class="budget-savings"></div>
+          </div>
+
+          <div class="budget-labels">
+            <span>50% Necesidades</span>
+            <span>30% Deseos</span>
+            <span>20% Ahorro</span>
+          </div>
+        }
+
+        @if (seccionActiva() === 'tarjetas') {
+          <div class="showcase-payment">
+            <span>Próximo vencimiento</span>
+            <strong>25 de noviembre</strong>
+          </div>
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+  </main>
+
+  <footer class="landing-footer">
+    <span>◈ FinTrack</span>
+    <p>© 2026 FinTrack. Organiza tu futuro financiero.</p>
+  </footer>
+
+</div>

@@ -128,67 +128,119 @@
   border-color: rgba(203, 186, 237, 0.25);
 }
 
-/* MOVIMIENTOS */
 
-.recent-section {
-  margin-top: 28px;
-  padding: 26px;
+/* MOVIMIENTOS RECIENTES */
+
+.recent-card {
   background: var(--color-surface);
   border: 1px solid rgba(203, 186, 237, 0.12);
   border-radius: 18px;
+  padding: 24px;
+  margin-top: 28px;
 }
 
-.section-header {
+.recent-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 15px;
   margin-bottom: 20px;
 }
 
-.section-header h2 {
+.recent-header h2 {
   margin: 0;
   font-size: 20px;
   color: var(--color-white);
 }
 
-.section-header a {
+.recent-header a {
   color: var(--color-secondary);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 }
 
-.section-header a:hover {
+.recent-header a:hover {
   text-decoration: underline;
 }
 
-.movement-row {
+/* LISTA DE MOVIMIENTOS */
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.recent-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 15px;
-  padding: 16px 0;
-  border-top: 1px solid rgba(203, 186, 237, 0.12);
+  gap: 20px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(203, 186, 237, 0.15);
 }
 
-.movement-row h3 {
-  margin: 0 0 5px;
-  font-size: 15px;
-  font-weight: 600;
+.recent-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.recent-info strong {
   color: var(--color-white);
+  font-size: 15px;
+  overflow-wrap: anywhere;
 }
 
-.movement-row p {
-  margin: 0;
-  font-size: 13px;
+.recent-info span {
   color: var(--color-text-secondary);
+  font-size: 13px;
 }
 
-.movement-row span {
+.recent-item > strong {
   font-size: 16px;
-  font-weight: 600;
+  white-space: nowrap;
 }
+
+/* COLORES */
+
+.recent-item .income-text {
+  color: #a5d6b5;
+}
+
+.recent-item .expense-text {
+  color: #ff9cad;
+}
+
+/* SIN MOVIMIENTOS */
+
+.empty-message {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 25px 0;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+
+  .recent-card {
+    padding: 20px;
+  }
+
+  .recent-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .recent-item {
+    flex-wrap: wrap;
+  }
+
+}
+
 
 /* RESPONSIVE */
 

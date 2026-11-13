@@ -50,27 +50,55 @@
   </div>
 
   <!-- MOVIMIENTOS RECIENTES -->
-  <div class="recent-section">
-    <div class="section-header">
-      <h2>Movimientos recientes</h2>
-      <a routerLink="/historial">Ver historial →</a>
-    </div>
+ 
+<div class="recent-card">
 
-    <div class="movement-row">
-      <div>
-        <h3>Sueldo</h3>
-        <p>Ingreso</p>
-      </div>
-      <span class="income-text">+$7,000.00</span>
-    </div>
+  <div class="recent-header">
+    <h2>Movimientos recientes</h2>
 
-    <div class="movement-row">
-      <div>
-        <h3>Alimentación</h3>
-        <p>Gasto</p>
-      </div>
-      <span class="expense-text">−$350.00</span>
-    </div>
+    <a routerLink="/historial">
+      Ver historial →
+    </a>
   </div>
+
+  <div class="recent-list">
+
+    @for (movimiento of movimientosRecientes();
+          track movimiento.tipo + '-' + movimiento.id) {
+
+      <div class="recent-item">
+
+        <div class="recent-info">
+          <strong>{{ movimiento.concepto }}</strong>
+
+          <span>
+            {{ movimiento.categoria }}
+            ·
+            {{ movimiento.fecha | date:'dd/MM/yyyy':'UTC' }}
+          </span>
+        </div>
+
+        <strong
+          [class.income-text]="movimiento.tipo === 'ingreso'"
+          [class.expense-text]="movimiento.tipo === 'gasto'"
+        >
+          {{ movimiento.tipo === 'ingreso' ? '+' : '-' }}
+          {{ movimiento.cantidad | currency:'MXN':'symbol-narrow':'1.2-2' }}
+        </strong>
+
+      </div>
+
+    } @empty {
+
+      <p class="empty-message">
+        Todavía no tienes movimientos registrados.
+      </p>
+
+    }
+
+  </div>
+
+</div>
+
 
 </section>

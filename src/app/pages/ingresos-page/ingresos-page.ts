@@ -1,5 +1,6 @@
 
 import { Component, inject } from '@angular/core';
+import { CategoriasService } from '../../services/categorias';
 import { CurrencyPipe } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -20,7 +21,9 @@ import { Ingreso } from '../../interfaces/ingreso.interface';
 export class IngresosPage {
 
   private ingresosService = inject(IngresosService);
+  private categoriasService = inject(CategoriasService);
 
+  categoriasIngresos = this.categoriasService.categoriasIngresos;
   ingresos = this.ingresosService.ingresos;
   totalIngresos = this.ingresosService.totalIngresos;
 

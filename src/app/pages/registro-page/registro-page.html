@@ -1,0 +1,147 @@
+
+<div class="registro-layout">
+
+  <section class="registro-info">
+    <a routerLink="/bienvenida" class="brand">
+      <img src="/icons/wallet-cards.svg" alt="">
+      <span>FinTrack</span>
+    </a>
+
+    <div class="info-content">
+      <span class="eyebrow">TU FUTURO FINANCIERO</span>
+
+      <h1>
+        Comienza a tomar el
+        <span>control de tu dinero.</span>
+      </h1>
+
+      <p>
+        Organiza tus ingresos, controla tus gastos,
+        administra tus tarjetas y alcanza tus metas
+        de ahorro desde un solo lugar.
+      </p>
+
+      <div class="benefits">
+        <div>✓ Organiza tus finanzas personales</div>
+        <div>✓ Planifica tus presupuestos</div>
+        <div>✓ Da seguimiento a tus metas</div>
+      </div>
+    </div>
+
+    <small>© 2026 FinTrack</small>
+  </section>
+
+  <section class="registro-section">
+    <div class="form-container">
+
+      <a routerLink="/bienvenida" class="back-link">
+        ← Volver al inicio
+      </a>
+
+      <h2>Crea tu cuenta</h2>
+      <p class="subtitle">
+        Empieza a organizar tus finanzas con FinTrack.
+      </p>
+
+      <form [formGroup]="registroForm" (ngSubmit)="registrar()">
+
+        <div class="form-field">
+          <label for="nombre">Nombre completo</label>
+          <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            placeholder="Tu nombre completo"
+            autocomplete="name"
+          >
+
+          @if (registroForm.controls.nombre.touched &&
+               registroForm.controls.nombre.invalid) {
+            <small class="error">
+              Ingresa un nombre de al menos 3 caracteres.
+            </small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="correo">Correo electrónico</label>
+          <input
+            id="correo"
+            type="email"
+            formControlName="correo"
+            placeholder="ejemplo@correo.com"
+            autocomplete="email"
+          >
+
+          @if (registroForm.controls.correo.touched &&
+               registroForm.controls.correo.invalid) {
+            <small class="error">
+              Ingresa un correo electrónico válido.
+            </small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="password">Contraseña</label>
+
+          <div class="password-field">
+            <input
+              id="password"
+              [type]="mostrarPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Mínimo 8 caracteres"
+              autocomplete="new-password"
+            >
+
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="mostrarPassword = !mostrarPassword"
+              [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              {{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+
+          @if (registroForm.controls.password.touched &&
+               registroForm.controls.password.invalid) {
+            <small class="error">
+              La contraseña debe tener al menos 8 caracteres.
+            </small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="confirmarPassword">Confirmar contraseña</label>
+          <input
+            id="confirmarPassword"
+            type="password"
+            formControlName="confirmarPassword"
+            placeholder="Repite tu contraseña"
+            autocomplete="new-password"
+          >
+
+          @if (enviado &&
+               registroForm.controls.password.value !==
+               registroForm.controls.confirmarPassword.value) {
+            <small class="error">
+              Las contraseñas no coinciden.
+            </small>
+          }
+        </div>
+
+        <button type="submit" class="submit-button">
+          Crear cuenta
+        </button>
+
+      </form>
+
+      <p class="login-text">
+        ¿Ya tienes una cuenta?
+        <a routerLink="/login">Inicia sesión</a>
+      </p>
+
+    </div>
+  </section>
+
+</div>

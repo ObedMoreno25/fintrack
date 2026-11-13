@@ -1,1 +1,139 @@
-<p>categorias-page works!</p>
+
+<section class="categorias-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Mis Categorías</h1>
+      <p>Personaliza la organización de tus finanzas.</p>
+    </div>
+    <span class="header-icon">▦</span>
+  </div>
+
+  <!-- FORMULARIO -->
+  <form
+    class="categoria-form"
+    [formGroup]="categoriaForm"
+    (ngSubmit)="onSubmit()"
+  >
+
+    <h2>Nueva categoría</h2>
+
+    <div class="form-group">
+      <label for="nombre">Nombre de la categoría</label>
+
+      <input
+        id="nombre"
+        type="text"
+        formControlName="nombre"
+        placeholder="Ej. Mascotas"
+      >
+
+      @if (categoriaForm.get('nombre')?.invalid &&
+           categoriaForm.get('nombre')?.touched) {
+        <span class="error-text">
+          Ingresa un nombre de al menos 3 caracteres.
+        </span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">Tipo de categoría</label>
+
+      <select id="tipo" formControlName="tipo">
+        <option value="ingreso">Ingreso</option>
+        <option value="gasto">Gasto</option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="categoriaForm.invalid">
+      + Agregar categoría
+    </button>
+
+  </form>
+
+  <!-- LISTADO DE CATEGORÍAS -->
+  <div class="categorias-grid">
+
+    <!-- INGRESOS -->
+    <div class="categorias-card">
+
+      <div class="card-header">
+        <h2>
+          <span class="income-icon">↗</span>
+          Categorías de ingresos
+        </h2>
+
+        <span class="count">
+          {{ categoriasIngresos().length }}
+        </span>
+      </div>
+
+      @for (categoria of categoriasIngresos(); track categoria.id) {
+
+        <div class="categoria-item">
+
+          <span class="categoria-nombre">
+            {{ categoria.nombre }}
+          </span>
+
+          <button
+            type="button"
+            class="delete-btn"
+            (click)="deleteCategoria(categoria.id)"
+          >
+            Eliminar
+          </button>
+
+        </div>
+
+      } @empty {
+        <p class="empty-message">
+          No hay categorías de ingresos.
+        </p>
+      }
+
+    </div>
+
+    <!-- GASTOS -->
+    <div class="categorias-card">
+
+      <div class="card-header">
+        <h2>
+          <span class="expense-icon">↘</span>
+          Categorías de gastos
+        </h2>
+
+        <span class="count">
+          {{ categoriasGastos().length }}
+        </span>
+      </div>
+
+      @for (categoria of categoriasGastos(); track categoria.id) {
+
+        <div class="categoria-item">
+
+          <span class="categoria-nombre">
+            {{ categoria.nombre }}
+          </span>
+
+          <button
+            type="button"
+            class="delete-btn"
+            (click)="deleteCategoria(categoria.id)"
+          >
+            Eliminar
+          </button>
+
+        </div>
+
+      } @empty {
+        <p class="empty-message">
+          No hay categorías de gastos.
+        </p>
+      }
+
+    </div>
+
+  </div>
+
+</section>

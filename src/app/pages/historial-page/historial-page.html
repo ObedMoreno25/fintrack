@@ -1,1 +1,135 @@
-<p>historial-page works!</p>
+
+<section class="historial-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Historial</h1>
+      <p>Consulta todos tus movimientos financieros.</p>
+    </div>
+
+    <span class="header-icon">◷</span>
+  </div>
+
+  <!-- RESUMEN FINANCIERO -->
+  <div class="summary-grid">
+
+    <div class="summary-card">
+      <span>Ingresos totales</span>
+
+      <h2 class="income-text">
+        {{ totalIngresos() | currency:'MXN':'symbol-narrow':'1.2-2' }}
+      </h2>
+    </div>
+
+    <div class="summary-card">
+      <span>Gastos totales</span>
+
+      <h2 class="expense-text">
+        {{ totalGastos() | currency:'MXN':'symbol-narrow':'1.2-2' }}
+      </h2>
+    </div>
+
+    <div class="summary-card balance-card">
+      <span>Balance disponible</span>
+
+      <h2>
+        {{ balance() | currency:'MXN':'symbol-narrow':'1.2-2' }}
+      </h2>
+    </div>
+
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="historial-card">
+
+    <div class="historial-header">
+      <div>
+        <h2>Mis movimientos</h2>
+        <p>{{ movimientosFiltrados().length }} registros encontrados</p>
+      </div>
+
+      <div class="filters">
+
+        <button
+          type="button"
+          [class.active]="filtro() === 'todos'"
+          (click)="cambiarFiltro('todos')"
+        >
+          Todos
+        </button>
+
+        <button
+          type="button"
+          [class.active]="filtro() === 'ingreso'"
+          (click)="cambiarFiltro('ingreso')"
+        >
+          Ingresos
+        </button>
+
+        <button
+          type="button"
+          [class.active]="filtro() === 'gasto'"
+          (click)="cambiarFiltro('gasto')"
+        >
+          Gastos
+        </button>
+
+      </div>
+    </div>
+
+    <!-- LISTA DE MOVIMIENTOS -->
+    <div class="movimientos-list">
+
+      @for (movimiento of movimientosFiltrados();
+            track movimiento.tipo + '-' + movimiento.id) {
+
+        <div class="movimiento-item">
+
+          <div class="movimiento-info">
+
+            <span
+              class="movimiento-icon"
+              [class.income-icon]="movimiento.tipo === 'ingreso'"
+              [class.expense-icon]="movimiento.tipo === 'gasto'"
+            >
+              {{ movimiento.tipo === 'ingreso' ? '↗' : '↘' }}
+            </span>
+
+            <div>
+              <h3>{{ movimiento.concepto }}</h3>
+
+              <p>
+                {{ movimiento.categoria }}
+                ·
+                {{ movimiento.fecha | date:'dd/MM/yyyy':'UTC' }}
+              </p>
+            </div>
+
+          </div>
+
+          <strong
+            [class.income-text]="movimiento.tipo === 'ingreso'"
+            [class.expense-text]="movimiento.tipo === 'gasto'"
+          >
+            {{ movimiento.tipo === 'ingreso' ? '+' : '-' }}
+            {{ movimiento.cantidad | currency:'MXN':'symbol-narrow':'1.2-2' }}
+          </strong>
+
+        </div>
+
+      } @empty {
+
+        <div class="empty-state">
+          <p>No hay movimientos para mostrar.</p>
+          <span>
+            Registra un ingreso o gasto para comenzar.
+          </span>
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</section>
